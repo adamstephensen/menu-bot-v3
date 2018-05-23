@@ -7,6 +7,8 @@ using Newtonsoft.Json;
 using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Connector;
 using System;
+using Microsoft.Bot.Builder.Dialogs;
+using MenuBot.BotAssets.Dialogs;
 
 namespace MenuBot
 {
@@ -30,12 +32,12 @@ namespace MenuBot
                     {
                         case ActivityTypes.Message:
                             //here is where we will navigate to root dialogue
-                            //await Conversation.SendAsync(activity, () => new RootDialog());
-                            var client = new ConnectorClient(new Uri(activity.ServiceUrl));
-                            var triggerReply = activity.CreateReply();
+                            await Conversation.SendAsync(activity, () => new RootDialog());
+                            //var client = new ConnectorClient(new Uri(activity.ServiceUrl));
+                            //var triggerReply = activity.CreateReply();
                             
-                            triggerReply.Text = $"Hey you said '{activity.Text}'.";
-                            await client.Conversations.ReplyToActivityAsync(triggerReply);
+                            //triggerReply.Text = $"Hey you said '{activity.Text}'.";
+                            //await client.Conversations.ReplyToActivityAsync(triggerReply);
 
                             break;
 
