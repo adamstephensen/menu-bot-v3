@@ -9,6 +9,8 @@ using Microsoft.Bot.Connector;
 using System;
 using Microsoft.Bot.Builder.Dialogs;
 using MenuBot.BotAssets.Dialogs;
+using System.Linq;
+using MenuBot.BotAssets.Extensions;
 
 namespace MenuBot
 {
@@ -35,12 +37,25 @@ namespace MenuBot
                             await Conversation.SendAsync(activity, () => new RootDialog());
                             //var client = new ConnectorClient(new Uri(activity.ServiceUrl));
                             //var triggerReply = activity.CreateReply();
-                            
+
                             //triggerReply.Text = $"Hey you said '{activity.Text}'.";
                             //await client.Conversations.ReplyToActivityAsync(triggerReply);
 
                             break;
 
+                        case ActivityTypes.ConversationUpdate:
+
+                            if (activity.MembersAdded.Any(o => o.Id == activity.Recipient.Id))
+                            {
+                                var reply = activity.CreateReply("Welcome to our Bot!");
+                                reply.AddHeroCard("Where do you want to go?", MenuHelpers.getMenuOptions("Home"));
+
+                                ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+
+                                await connector.Conversations.ReplyToActivityAsync(reply);
+                            }
+
+                            break;
                         default:
                             log.Error($"Unknown activity type ignored: {activity.GetActivityType()}");
                             break;
